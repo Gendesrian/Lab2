@@ -84,267 +84,204 @@ volatile int state2 = 0;
 
 char KeypadScan() { // NEED TO REDO THIS ENTIRE SECTION. DOES NOT WORK ALL THE TIME
 	char key = -1;
-        //int state2 = 0;
-       // int count = 0;
-        //int i = 0;
-while (1){
+        int word = 0x000;
+        //int count = 0;
+
+    while (1){
         switch (state2){
                 
                 case 0:
-                  LATBbits.LATB15 = 0;
-                  LATBbits.LATB14 = 1;
-                  LATBbits.LATB13 = 1;
-                  LATBbits.LATB12 = 1;
-                  DelayUs(150000);
+//                  LATBbits.LATB15 = 0;
+//                  LATBbits.LATB14 = 1;
+//                  LATBbits.LATB13 = 1;
+//                  LATBbits.LATB12 = 1;
+                    LATB = (LATB | 0xF000);
+                    word = 0x7FFF;
+                    LATB = (word & LATB);
+
+                    DelayUs(150000);
                   
-                  if(PORTAbits.RA0 == 0 && PORTAbits.RA1 == 1 && PORTBbits.RB2 == 1){
-                      key = '1';
-                      state2 = 5;
-                  }
+                    if(PORTAbits.RA0 == 0 && PORTAbits.RA1 == 1 && PORTBbits.RB2 == 1){
+                        key = '1';
+                        state2 = 5;
+                       // count +=1;
+                    }
                   
-                  if(PORTAbits.RA0 == 1 && PORTAbits.RA1 == 0 && PORTBbits.RB2 == 1){
-                      key = '2';
-                      state2 = 6;
-                  }
+                    if(PORTAbits.RA0 == 1 && PORTAbits.RA1 == 0 && PORTBbits.RB2 == 1){
+                        key = '2';
+                        state2 = 6;
+                        //count +=1;
+                    }
                   
-                  if(PORTAbits.RA0 == 1 && PORTAbits.RA1 == 1 && PORTBbits.RB2 == 0){
-                      key = '3';
-                      state2 = 7;
-                  }
+                    if(PORTAbits.RA0 == 1 && PORTAbits.RA1 == 1 && PORTBbits.RB2 == 0){
+                        key = '3';
+                        state2 = 7;
+                   //     count+=1;
+                    }
                   
-                  if(PORTAbits.RA0 == 1 && PORTAbits.RA1 == 1 && PORTBbits.RB2 == 1) {
-                      state2 = 1;
-                  }
-                  break;
-                  
-                  
-                  
-                  
-                  case 1:
-                  LATBbits.LATB15 = 1;
-                  LATBbits.LATB14 = 0;
-                  LATBbits.LATB13 = 1;
-                  LATBbits.LATB12 = 1;
-                  DelayUs(150000);
-                  
-                  if(PORTAbits.RA0 == 0 && PORTAbits.RA1 == 1 && PORTBbits.RB2 == 1){
-                      key = '4';
-                      state2 = 5;
-                  }
-                  
-                  if(PORTAbits.RA0 == 1 && PORTAbits.RA1 == 0 && PORTBbits.RB2 == 1){
-                      key = '5';
-                      state2 = 6;
-                  }
-                  
-                  if(PORTAbits.RA0 == 1 && PORTAbits.RA1 == 1 && PORTBbits.RB2 == 0){
-                      key = '6';
-                      state2 = 7;
-                  }
-                  
-                  if(PORTAbits.RA0 == 1 && PORTAbits.RA1 == 1 && PORTBbits.RB2 == 1) {
-                      state2 = 2;
-                  }
-                  break;
+                    if(PORTAbits.RA0 == 1 && PORTAbits.RA1 == 1 && PORTBbits.RB2 == 1) {
+                        state2 = 1;
+                    }
+                break;
                   
                   
                   
                   
-                  case 2:
-                  LATBbits.LATB15 = 1;
-                  LATBbits.LATB14 = 1;
-                  LATBbits.LATB13 = 0;
-                  LATBbits.LATB12 = 1;
-                  DelayUs(150000);
+                case 1:
+//                    LATBbits.LATB15 = 1;
+//                    LATBbits.LATB14 = 0;
+//                    LATBbits.LATB13 = 1;
+//                    LATBbits.LATB12 = 1;
+                    word = ((word>>1) | (0x8000));
+                    LATB = (LATB | 0xF000);
+                    LATB = (word & LATB);
+
+                    DelayUs(150000);
                   
-                  if(PORTAbits.RA0 == 0 && PORTAbits.RA1 == 1 && PORTBbits.RB2 == 1){
-                      key = '7';
-                      state2 = 5;
-                  }
+                    if(PORTAbits.RA0 == 0 && PORTAbits.RA1 == 1 && PORTBbits.RB2 == 1){
+                        key = '4';
+                        state2 = 5;
+                    //    count +=1;
+                    }
                   
-                  if(PORTAbits.RA0 == 1 && PORTAbits.RA1 == 0 && PORTBbits.RB2 == 1){
-                      key = '8';
-                      state2 = 6;
-                  }
+                    if(PORTAbits.RA0 == 1 && PORTAbits.RA1 == 0 && PORTBbits.RB2 == 1){
+                        key = '5';
+                        state2 = 6;
+                    //    count+=1;
+                    }
                   
-                  if(PORTAbits.RA0 == 1 && PORTAbits.RA1 == 1 && PORTBbits.RB2 == 0){
-                      key = '9';
-                      state2 = 7;
-                  }
+                    if(PORTAbits.RA0 == 1 && PORTAbits.RA1 == 1 && PORTBbits.RB2 == 0){
+                        key = '6';
+                        state2 = 7;
+                      //  count+=1;
+                    }
                   
-                  if(PORTAbits.RA0 == 1 && PORTAbits.RA1 == 1 && PORTBbits.RB2 == 1) {
-                      state2 = 3;
-                  }
-                  break;
+                    if(PORTAbits.RA0 == 1 && PORTAbits.RA1 == 1 && PORTBbits.RB2 == 1) {
+                        state2 = 2;
+                    }
+                break;
                   
                   
                   
                   
-                  case 3:
-                  LATBbits.LATB15 = 1;
-                  LATBbits.LATB14 = 1;
-                  LATBbits.LATB13 = 1;
-                  LATBbits.LATB12 = 0;
-                  DelayUs(150000);
+                case 2:
+//                    LATBbits.LATB15 = 1;
+//                    LATBbits.LATB14 = 1;
+//                    LATBbits.LATB13 = 0;
+//                    LATBbits.LATB12 = 1;
+                    word = ((word>>1) | (0x8000));
+                    LATB = (LATB | 0xF000);
+                    LATB = (word & LATB);
+
+                    DelayUs(150000);
                   
-                  if(PORTAbits.RA0 == 0 && PORTAbits.RA1 == 1 && PORTBbits.RB2 == 1){
-                      key = '*';
-                      state2 = 5;
-                  }
+                    if(PORTAbits.RA0 == 0 && PORTAbits.RA1 == 1 && PORTBbits.RB2 == 1){
+                        key = '7';
+                        state2 = 5;
+                        //count+=1;
+                    }
                   
-                  if(PORTAbits.RA0 == 1 && PORTAbits.RA1 == 0 && PORTBbits.RB2 == 1){
-                      key = '0';
-                      state2 = 6;
-                  }
+                    if(PORTAbits.RA0 == 1 && PORTAbits.RA1 == 0 && PORTBbits.RB2 == 1){
+                        key = '8';
+                        state2 = 6;
+                       // count+=1;
+                    }
                   
-                  if(PORTAbits.RA0 == 1 && PORTAbits.RA1 == 1 && PORTBbits.RB2 == 0){
-                      key = '#';
-                      state2 = 7;
-                  }
+                    if(PORTAbits.RA0 == 1 && PORTAbits.RA1 == 1 && PORTBbits.RB2 == 0){
+                        key = '9';
+                        state2 = 7;
+                        //count+=1;
+                    }
                   
-                  if(PORTAbits.RA0 == 1 && PORTAbits.RA1 == 1 && PORTBbits.RB2 == 1) {
-                      state2 = 4;
-                  }
-                  break;
+                    if(PORTAbits.RA0 == 1 && PORTAbits.RA1 == 1 && PORTBbits.RB2 == 1) {
+                        state2 = 3;
+                    }
+                break;
+                  
+                  
+                  
+                  
+                case 3:
+//                    LATBbits.LATB15 = 1;
+//                    LATBbits.LATB14 = 1;
+//                    LATBbits.LATB13 = 1;
+//                    LATBbits.LATB12 = 0;
+                    word = ((word >> 1) | (0x8000));
+                    LATB = (LATB | 0xF000);
+                    LATB = (word & LATB);
+
+                    DelayUs(150000);
+                  
+                    if(PORTAbits.RA0 == 0 && PORTAbits.RA1 == 1 && PORTBbits.RB2 == 1){
+                        key = '*';
+                        state2 = 5;
+                       // count+=1;
+                    }
+                  
+                    if(PORTAbits.RA0 == 1 && PORTAbits.RA1 == 0 && PORTBbits.RB2 == 1){
+                        key = '0';
+                        state2 = 6;
+                        //count+=1;
+                    }
+                  
+                    if(PORTAbits.RA0 == 1 && PORTAbits.RA1 == 1 && PORTBbits.RB2 == 0){
+                        key = '#';
+                        state2 = 7;
+                        //count+=1;
+                    }
+                  
+                    if(PORTAbits.RA0 == 1 && PORTAbits.RA1 == 1 && PORTBbits.RB2 == 1) {
+                        state2 = 4;
+                    }
+                break;
 
 
 
-                  case 4:
-                  LATBbits.LATB15 = 0;
-                  LATBbits.LATB14 = 0;
-                  LATBbits.LATB13 = 0;
-                  LATBbits.LATB12 = 0;
-                  DelayUs(150000);
-                  state2 = 0;
-                      return key;
-                  break;
+                case 4:
+//                    LATBbits.LATB15 = 0;
+//                    LATBbits.LATB14 = 0;
+//                    LATBbits.LATB13 = 0;
+//                    LATBbits.LATB12 = 0;
+                    LATB = (LATB | 0xF000);
+                    LATB = (LATB ^ 0xF000);
+
+                    DelayUs(150000);
+                    state2 = 0;
+                    //if (count >1)
+                    //{
+                     //   key = '-1';
+                    //}
+                    return key;
+                break;
 
 
 
-                  case 5:
-                      if (PORTAbits.RA0 == 1){
-                          state2 = 4;
-                      }
-                  break;
+                case 5:
+                    if (PORTAbits.RA0 == 1){
+                        state2 = 4;
+                    }
+                break;
 
 
 
-                  case 6:
-                      if (PORTAbits.RA1 == 1){
-                          state2 = 4;
-                      }
-                  break;
+                case 6:
+                    if (PORTAbits.RA1 == 1){
+                        state2 = 4;
+                    }
+                break;
 
 
 
-                  case 7:
-                       if (PORTBbits.RB2 == 1){
-                          state2 = 4;
-                      }
-                  break;
+                case 7:
+                    if (PORTBbits.RB2 == 1){
+                        state2 = 4;
+                    }
+                break;
         }
-}
-             
-/*
-            LATBbits.LATB15 = 0;
-            LATBbits.LATB14 = 1;
-            LATBbits.LATB13 = 1;
-            LATBbits.LATB12 = 1;
-            DelayUs(150000);
-
-                if(PORTAbits.RA0 == 0 && PORTAbits.RA1 == 1 && PORTBbits.RB2 == 1){
-                    key='1';
-                    count = count + 1;
-            }
-                if(PORTAbits.RA0 == 1 && PORTAbits.RA1 == 0 && PORTBbits.RB2 == 1){
-                    key='2';
-                    count = count + 1;
-                }
-                if(PORTAbits.RA0 == 1 && PORTAbits.RA1 == 1 && PORTBbits.RB2 == 0){
-                    key='3';
-                    count = count + 1;
-                }
-            DelayUs(150000);
-            DelayUs(150000);
-                            
-                
-            LATBbits.LATB15 = 1;
-            LATBbits.LATB14 = 0;
-            LATBbits.LATB13 = 1;
-            LATBbits.LATB12 = 1;
-            DelayUs(150000);
-
-                if(PORTAbits.RA0 == 0 && PORTAbits.RA1 == 1 && PORTBbits.RB2 == 1){
-                    key='4';
-                    count = count + 1;
-            }
-                if(PORTAbits.RA0 == 1 && PORTAbits.RA1 == 0 && PORTBbits.RB2 == 1){
-                    key='5';
-                    count = count + 1;
-                }
-                if(PORTAbits.RA0 == 1 && PORTAbits.RA1 == 1 && PORTBbits.RB2 == 0){
-                    key='6';
-                    count = count + 1;
-                }
-
-            DelayUs(150000);
-            DelayUs(150000);
-
-
-            LATBbits.LATB15 = 1;
-            LATBbits.LATB14 = 1;
-            LATBbits.LATB13 = 0;
-            LATBbits.LATB12 = 1;
-            DelayUs(150000);
-
-                if(PORTAbits.RA0 == 0 && PORTAbits.RA1 == 1 && PORTBbits.RB2 == 1){
-                    key='7';
-                    count = count + 1;
-            }
-                if(PORTAbits.RA0 == 1 && PORTAbits.RA1 == 0 && PORTBbits.RB2 == 1){
-                    key='8';
-                    count = count + 1;
-                }
-                if(PORTAbits.RA0 == 1 && PORTAbits.RA1 == 1 && PORTBbits.RB2 == 0){
-                    key='9';
-                    count = count + 1;
-                }
-            DelayUs(150000);
-            DelayUs(150000);
-
-            LATBbits.LATB15 = 1;
-            LATBbits.LATB14 = 1;
-            LATBbits.LATB13 = 1;
-            LATBbits.LATB12 = 0;
-            DelayUs(150000);
-
-                if(PORTAbits.RA0 == 0 && PORTAbits.RA1 == 1 && PORTBbits.RB2 == 1){
-                    key='*';
-                    count = count + 1;
-            }
-                if(PORTAbits.RA0 == 1 && PORTAbits.RA1 == 0 && PORTBbits.RB2 == 1){
-                    key='0';
-                    count = count + 1;
-                }
-                if(PORTAbits.RA0 == 1 && PORTAbits.RA1 == 1 && PORTBbits.RB2 == 0){
-                    key='#';
-                    count = count + 1;
-                }
-
-            DelayUs(150000);
-            DelayUs(150000);
-
-            LATBbits.LATB15 = 0;
-            LATBbits.LATB14 = 0;
-            LATBbits.LATB13 = 0;
-            LATBbits.LATB12 = 0;
-            DelayUs(150000);
-
-            return key;*/
+    }
 }
                                     
         
-
 	// TODO: Implement the keypad scanning procedure to detect if exactly one button of the 
 	// keypad is pressed. The function should return:
 	//
