@@ -43,14 +43,7 @@ void DelayUs(unsigned int usDelay) {
 	// one microsecond delay, and multiply this by the input variable.
 	// Be sure to user integer values only.
 /**********************************************/
-
-//    int PR1delay = 14;
-//    int i;
-//    TMR2 = usDelay *  PR1delay;
-//    T2CON = 0x8000;
-//    for(i = 0; i < TMR2; i++);
-
-        
+       
         TMR2=0;
         PR2= (usDelay * 2);
         IFS0bits.T2IF = 0;
@@ -160,7 +153,7 @@ void WriteLCD(unsigned char word, unsigned commandType, unsigned usDelay) {
 
 void LCDInitialize(void) {
 
-	// Setup D, RS, and E to be outputs (0).
+    // Setup D, RS, and E to be outputs (0).
     LCD_TRIS_D7 = 0;                                                            //setting pins as output
     LCD_TRIS_D6 = 0;
     LCD_TRIS_D5 = 0;
@@ -187,7 +180,8 @@ void LCDInitialize(void) {
     // Enable 4-bit interface
      WriteLCD(0x32, LCD_WRITE_CONTROL, 100);
 
-    // Function Set (specifies data width, lines, and font.                                                    // 2 = 2 lines, 8 = data witdth of 4 bits
+    // Function Set (specifies data width, lines, and font.
+     // 2 = 2 lines, 8 = data witdth of 4 bits
      WriteLCD(0x28, LCD_WRITE_CONTROL, 40);
 
     // 4-bit mode initialization is complete. We can now configure the various LCD
@@ -197,14 +191,14 @@ void LCDInitialize(void) {
      	// TODO: Display On/Off Control
 	// Turn Display (D) Off
 
-     WriteLCD(0x08, LCD_WRITE_CONTROL, 40);                                        // Clear display then set DDRAM
+     WriteLCD(0x08, LCD_WRITE_CONTROL, 40);                                     // Clear display then set DDRAM
 
 	// TODO: Clear Display
-    WriteLCD(0x01, LCD_WRITE_CONTROL, 1500);                                     // Clear display then set cursor and display
+    WriteLCD(0x01, LCD_WRITE_CONTROL, 1500);                                    // Clear display then set cursor and display
 
 	// TODO: Entry Mode Set
 	// Set Increment Display, No Shift (i.e. cursor move)
-    WriteLCD(0x06, LCD_WRITE_CONTROL, 40);                                       // clear display then set writing style
+    WriteLCD(0x06, LCD_WRITE_CONTROL, 40);                                      // Clear display then set writing style
 
 	// TODO: Display On/Off Control
 	// Turn Display (D) On, Cursor (C) Off, and Blink(B) Off
@@ -212,30 +206,6 @@ void LCDInitialize(void) {
 
     
     
-//    LCDPrintChar('h');
-//    LCDPrintChar('e');
-//    LCDPrintChar('l');
-//    LCDPrintChar('l');
-//    LCDPrintChar('o');
-//    LCDPrintChar('!');
-//    //testing to send characters
-//    LCDMoveCursor( 0 , 0);
-//    WriteLCD(0x41, LCD_WRITE_DATA, 46);
-//   // LCDClear();
-//    LCDMoveCursor( 1 , 1);
-//    WriteLCD(0x42, LCD_WRITE_DATA, 46);
-////     // LCDClear();
-//    LCDMoveCursor( 0 , 2);
-//    WriteLCD(0x31, LCD_WRITE_DATA, 46);
-////        //LCDClear();
-//    LCDMoveCursor( 1 , 3);
-//    WriteLCD(0x32, LCD_WRITE_DATA, 46);
-
-
-
-
-
-
 }
 
 // ******************************************************************************************* //
@@ -250,7 +220,6 @@ void LCDClear(void) {
         //write control function
     WriteLCD(0x01, LCD_WRITE_CONTROL, 1700);
 
-    //should move cursor back to original (call LCDMoveCursor)
 }
 
 // ******************************************************************************************* //
@@ -290,15 +259,9 @@ void LCDMoveCursor(unsigned char x, unsigned char y) {
 	// control instruction, i.e. a single call the WriteLCD() function.
 
     //pass in characters, should store character into a tempCharacter which takes place of address in DDRAM
-//    x &= 0x0F;
-//    y &= 0x0F;
-//
-//    int tempX = x << 12;
-//    int tempY = y << 8;
+
     int tempChar = 0x00;
 
-//    tempChar &= tempX;
-//    tempChar |= tempY;
     if (x==0){
         tempChar = 0x00;
 

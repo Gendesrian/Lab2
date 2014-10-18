@@ -43,16 +43,8 @@ volatile int state = 0;
 int main(void)
 {
 
+/*INITIALIZED VARIABLES USED */
 	unsigned char key;
-       // const unsigned int max_NUM_PW = 10;
-       // const unsigned int max_PW_length = 6;
-       // unsigned char acceptablePW[max_NUM_PW][max_PW_length];
-       //char testPW[6];
-        //testPW = ""
-       //testPW = "";
-       //strcpy(testPW, "");
-       // int next_empty_row = 0;
-       // int index_acceptablePW = 0;
         unsigned int printVar0 = 0;
         unsigned int printVar1 = 0;
         unsigned int result = 0;
@@ -61,72 +53,53 @@ int main(void)
         unsigned int tempCount = 0;
         unsigned int i = 0;
         unsigned pwCount = 1;
-        char defaultPW[5] = {'1', '2', '3' , '4'};
-        //acceptablePW[next_empty_row]="1234";
-       // strcpy(acceptablePW[next_empty_row], "1234");
-       // next_empty_row += 1;
+//////////////////////////////
 
+/*INITIALIZED ARRAYS USED FOR PASSWORDS*/
+        char defaultPW[5] = {'1', '2', '3' , '4'};
         char tempArry[5] = {};
         unsigned char passW1[5] = {};
         unsigned char passW2[5] = {};
         unsigned char passW3[5] = {};
         unsigned char passW4[5] = {};
+////////////////////////////////////////
 
+/*32-bit TIMER FOR DISPAY WAITING*/
         T4CONbits.T32 = 1;
         T4CONbits.TCKPS0 = 0;                                                   // 1:1 prescale
         T4CONbits.TCKPS1 = 0;
-        PR4 = 0;                                                                // creates a 2second timer
+        PR4 = 0;                                                                // Creates a 2second timer
         PR5 = 0b111000010;
         TMR4 = 0;
         TMR5 = 0;
-        IFS1bits.T5IF = 0;                                                      //drop the flag
-        IEC1bits.T5IE = 1;                                                      //enale interrupt enable
-                                                             //enable 32 bit timer
-        T4CONbits.TON = 0;                                                      // turn timer off
-                                                  //  ^^
-
-
-        //unsigned int state = 0;
-
-
+        IFS1bits.T5IF = 0;                                                      // Drop the flag
+        IEC1bits.T5IE = 1;                                                      // Enale interrupt enable
+        T4CONbits.TON = 0;                                                      // Rurn timer off
+///////////////////////////////////
+                         
 	// TODO: Initialize and configure IOs, LCD (using your code from Lab 1), 
 	// UART (if desired for debugging), and any other configurations that are needed.
 	
-	LCDInitialize();
-	KeypadInitialize();
+	LCDInitialize();                                                        // Initialize LCD
+	KeypadInitialize();                                                     // Initialize Keypad
 	
 	// TODO: Initialize scanKeypad variable.
 	
 	while(1){
 		// TODO: Once you create the correct keypad driver (Part 1 of the lab assignment), write
 		// the C program that use both the keypad and LCD drivers to implement the 4-digit password system.
-                /*if( scanKeypad == 1 ) {
-                      
-			key = KeypadScan();
-			if( key != -1 ) {
-				LCDMoveCursor(1,0);
-				LCDPrintChar(key);
-			}
-			scanKeypad = 0;
-		}*/
-
-            switch(state){
+                
+            switch(state){                                                      // State machine
 
                 case 0:                                         		// User Mode State
 /*******************************PRINT PORTION**********************************/
-                    if (printVar0 ==  0){            				//[D:I renamed printVar to 0 and 1 for 								//each case, respectively, because it only 							//sets to 0 during clear state and this
-                                                                                    //program can go from case 0 -> case1
-                                                                                    //so printVar as before would stay 1 and
-                                                                                //skip screen initialization for program 								//state]
+                    if (printVar0 ==  0){            				// Varable to print only once
 
                     printVar0 = 1;                                       	// Displayed header already
                     LCDPrintString("Enter");                                	// Display enter on LCD 1st line 									//[D:removed colon, not in example]
                     LCDMoveCursor(1,0);                                         // Go to line 2 columb 1
-                                                                                    //[D:LCD command code "C0" forces cursor to beginning of 2nd line]
-                    inputCount = 0;                                             //only in this state once
-                                                                                    //initialized and cleared
-                    starCount=0;                                                //only in this state once
-                                                                                    //initialized and cleared
+                    inputCount = 0;                                             // Set inputCount to 0 for iterations of key presses
+                    starCount=0;                                                // Set starCount to 0 for program mode
                     }
 /******************************END PRINT PORTION*******************************/
 
@@ -137,13 +110,13 @@ int main(void)
                         if(key != -1){
                             LCDPrintChar(key);                  		// Display key
                             inputCount += 1;                                    // Increment inputCount for = 5 case
-                           tempArry[tempCount] = key;                          // Store key into tempArry
+                           tempArry[tempCount] = key;                           // Store key into tempArry
                             tempCount += 1;                                     // Count for tempArry storage.  May be able to just use inputCount.
-                           // strcat(testPW,key);                                 //adds key to testPW
+
                             if ( key == '*'){
 				starCount = starCount + 1;
-				//if the 1st two entries are stars
-				if ( starCount == 2 && inputCount == 2){
+				
+				if ( starCount == 2 && inputCount == 2){        // If the 1st two entries are stars
 					state = 1;                              // Go to program state
 				}
                                 else if (starCount != 2 && inputCount >= 2){
@@ -155,27 +128,17 @@ int main(void)
                             if (key == '#'){
 				result = 1;                             	// Bad
 				state = 3;                              	// Go to result state
-                            //[D:if pound is entered WHILE NOT IN PROGRAM MODE it is
-                                //automatically a bad entry]
                             }
 
-                            /*else{
-                             *
-				//[D: ONLY NEED TO COMPARE ONCE ALL 4 DIGITS ARE 						//ENTERED, ELSE STATEMENT NOT NEEDED UNTIL AT END]
-				//DO SOMETHING HERE TO COMPARE OR CALL COMPARE
-                          	//FUNCTION OR COMPARE STATE
-				//POSSIBLY STORE IN TEMP ARRAY TO COMPARE LATER
-                            }*/
-
                             if (inputCount == 4){
-                                T4CONbits.TON = 1;                              // turn timer on
+                                T4CONbits.TON = 1;                              // Turn timer on
                                 while (IFS1bits.T5IF == 0);
-                                T4CONbits.TON = 0;
+                                T4CONbits.TON = 0;                              // Turn timer off
                             
-                            state = 2;                                          //I think this is when to untilize state 2
+                            state = 2;                                          // Go to compare state
 
                             }                                                   // End of IF(inputCount==4)
-                        }
+                        }                                                       // End of IF(key != -1)
                     }                                                           // End scanKeypad == 1
 
 /****************************END SCAN PORTION**********************************/
@@ -203,58 +166,57 @@ int main(void)
                     }
 /***************************END PRINT PORTION**********************************/
 
+
+/******************************SCAN PORTION************************************/
                     if (scanKeypad == 1){
                         key = KeypadScan();
                         scanKeypad = 0;
-                       // if (key != -1){
                             LCDPrintChar(key);                              	// Display key
-                            inputCount += 1;                                        // Update inputCount
+                            inputCount += 1;                                    // Update inputCount
+
                             if(tempCount != 4){
                             tempArry[tempCount] = key;
-                            tempCount += 1;                                         // Update tempCount for tempArry
+                            tempCount += 1;                                     // Update tempCount for tempArry
                             }
-                          //  strcat(testPW,key);                                 //adds key to testPW
 
                             if (inputCount <5 && key != -1){
                                 if (key == '*'){
-                                    result = 3;                                     // Invalid
+                                    result = 3;                                 // Invalid
                                     state = 3;                              	// Go to result state
                                 }
 
                                 if (key == '#'){
                                     result = 3;                             	// Invalid
-                                    state = 3;                                      // Go to result state
+                                    state = 3;                                  // Go to result state
                                 }
 
-                            }                                                       // End of IF count less than 4
+                            }                                                   // End of IF count less than 4
 
                             if( inputCount == 5 ){
                                 if (key == '#'){
-                                    T4CONbits.TON = 1;                              // turn timer on
+                                    T4CONbits.TON = 1;                          // Turn timer on
                                     while (IFS1bits.T5IF == 0);
-                                    T4CONbits.TON = 0;
-                                   // strcpy(acceptablePW[next_empty_row], testPW);
-                                    //acceptablePW[next_empty_row] = testPW;
-                                   // next_empty_row +=1;
-                                    if(pwCount == 1){
-                                        strcpy(passW1,tempArry);
-                                        pwCount += 1;
+                                    T4CONbits.TON = 0;                          // Turn timer off
+
+                                    if(pwCount == 1){                           // Check number of passwords
+                                        strcpy(passW1,tempArry);                // Copy tempArry password into password 1
+                                        pwCount += 1;                           // Update number of passwords for next set mode input
                                         result = 4;
                                         state = 3;
                                     }
-                                    else if(pwCount == 2){
-                                        strcpy(passW2,tempArry);
-                                        pwCount += 1;
+                                    else if(pwCount == 2){                      // Check number of passwords
+                                        strcpy(passW2,tempArry);                // Copy tempArry password into password 2
+                                        pwCount += 1;                           // Update number of passwords for next set mode input
                                     }
-                                    else if(pwCount == 3){
-                                        strcpy(passW3,tempArry);
-                                        pwCount += 1;
+                                    else if(pwCount == 3){                      // Check number of passwords
+                                        strcpy(passW3,tempArry);                // Copy tempArry password into password 3
+                                        pwCount += 1;                           // Update number of passwords for next set mode input
                                     }
-                                    else if(pwCount == 4){
-                                        strcpy(passW4,tempArry);
-                                        pwCount += 1;
+                                    else if(pwCount == 4){                      // Check number of passwords
+                                        strcpy(passW4,tempArry);                // Copy tempArry password into password 4
+                                        pwCount += 1;                           // Update number of passwords for next set mode input
                                     }
-                                    result = 4;                                     // Valid
+                                    result = 4;                                 // Valid
                                     state = 3;                              	// Go to result state
                                 }
 
@@ -263,7 +225,6 @@ int main(void)
                                     state = 3;                              	// Go to result state
                                 }
                             }
-                       // }
                     }                                                           // End scanKeypad == 1
 /****************************END SCAN PORTION**********************************/
                 break;
@@ -277,59 +238,30 @@ int main(void)
 
                 case 2: 							// Compare
                     
-
-                    
-                // compare temp array to programed arrays
-                //[D:Is this where you compare with your list of acceptable PW?!?]
-                //DO SOMETHING HERE TO COMPARE OR CALL COMPARE
-                //FUNCTION OR COMPARE STATE
-                //POSSIBLY STORE IN TEMP ARRAY TO COMPARE LATER
-                    if(strcmp(tempArry, defaultPW)==0 ){
-                            result = 2;
+                    if(strcmp(tempArry, defaultPW)==0 ){                        // Compare tempArry password to the default
+                            result = 2;                                         // If found make result Good
                         }
                         
-                    else if(strcmp(tempArry, passW1)==0 ){
-                            result = 2;
+                    else if(strcmp(tempArry, passW1)==0 ){                      // Compare tempArry password to password 1
+                            result = 2;                                         // If found make result Good
                         }
                        
-                    else if(strcmp(tempArry, passW2)==0 ){
-                            result = 2;
+                    else if(strcmp(tempArry, passW2)==0 ){                      // Compare tempArry password to password 2
+                            result = 2;                                         // If found make result Good
                         }
                        
-                    else if(strcmp(tempArry, passW3)==0 ){
-                            result = 2;
+                    else if(strcmp(tempArry, passW3)==0 ){                      // Compare tempArry password to password 3
+                            result = 2;                                         // If found make result Good
                         }
                        
-                    else if(strcmp(tempArry, passW4)==0 ){
-                            result = 2;
+                    else if(strcmp(tempArry, passW4)==0 ){                      // Compare tempArry password to password 4
+                            result = 2;                                         // If found make result Good
                         }
                     else {
                         result = 1;
                     }
 
-                    
-
-
-                    //for (index_acceptablePW=0; i < max_NUM_PW; index_acceptablePW++)
-                   // {
-                   //     if (strcmp(acceptablePW[index_acceptablePW],testPW) == 0)
-//                        {
-//                            result = 2;
-//                            state = 3;
-//                            //continue;
-//
-//                        }
-//
-//                        else if (result != 2 && state != 3)
-//                        {
-//                            result = 1;
-//                        }
-//                       // if (state == 3)
-//                       // {
-//                       //     break;
-//                       // }
-//                    }
-                    state = 3; // Go to result state
+                    state = 3;                                                  // Go to result state
 
                 break;
 
@@ -345,18 +277,13 @@ int main(void)
                 printVar0 = 0;                                          	// Reset printVar1/2 for case 0 and 1
                 printVar1 = 0;
                 LCDClear();                                                 	// Clear screen and return home
+
                 if (result == 1){
                     LCDPrintString("Bad");                                	// Display Bad
-                //T4CONbits.TON = 1;                                          	// turn timer on
-                //while (IFS1bits.T5IF == 0);                                     //
-                //T4CONbits.TON = 0;
                 }
 
                 if (result == 2){
                     LCDPrintString("Good");                                 	// Display Good
-                //T4CONbits.TON = 1;                                          	// turn timer on
-                //while (IFS1bits.T5IF == 0);                                     //
-                //T4CONbits.TON = 0;
                 }
 
                 if (result == 3){
@@ -367,16 +294,9 @@ int main(void)
                     LCDPrintString("Valid");                                     // Display Valid
                 }
 
-               // for (i=0; i< 6 ; i++){
-                    //tempArry[i] = '\0';
-               // }
-
-                T4CONbits.TON = 1;                                          	// turn timer on
-                while (IFS1bits.T5IF == 0);                                     //
-                T4CONbits.TON = 0;
-                //TMR4 = 0;
-                //TMR5 =0;
-                //tempArry[5] = {};
+                T4CONbits.TON = 1;                                          	// Turn timer on
+                while (IFS1bits.T5IF == 0);                                     
+                T4CONbits.TON = 0;                                              // Turn timer off
                 scanKeypad = 0;
                 starCount = 0;                                                  // Reset starCount to 0
                 inputCount = 0;                                                 // Reset inputCount = 0
