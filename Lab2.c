@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include "lcd.h"
 #include "keypad.h"
+#include "string.h"
 
 // ******************************************************************************************* //
 // Configuration bits for CONFIG1 settings. 
@@ -47,6 +48,9 @@ int main(void)
         unsigned int result = 0;
         unsigned int inputCount=0;
         unsigned int starCount = 0;
+        unsigned int tempCount = 0;
+        unsigned char defaultPW[5] = 'NULL';
+        unsigned char tempArry[5] = 'NULL';
         //unsigned int state = 0;
 
 
@@ -96,9 +100,11 @@ int main(void)
                     if (scanKeypad == 1){
                         key = KeypadScan();
                         scanKeypad = 0;
-                        if (inputCount < 6 && key != -1) {//DONT NEED THIS. WILL GO TO COMPARE AT 5 NUMBERS
+                        if (inputCount < 5 && key != -1) {//DONT NEED THIS. WILL GO TO COMPARE AT 5 NUMBERS
                             LCDPrintChar(key);                  		// Display key
-                            inputCount += 1;
+                            inputCount += 1;                                    // Increment inputCount for = 5 case
+                            tempArry[tempCount] = key;                          // Store key into tempArry
+                            tempCount += 1;                                     // Count for tempArry storage.  May be able to just use inputCount.
                         }
 			if ( key == '*'){
 				starCount = starCount + 1;
@@ -113,13 +119,14 @@ int main(void)
                         }
 
 			if (key == '#'){
-				result = 1;		// Bad
-				state = 3;		// Go to result state
+				result = 1;                             	// Bad
+				state = 3;                              	// Go to result state
 			//[D:if pound is entered WHILE NOT IN PROGRAM MODE it is
                                 //automatically a bad entry]
                         }
 
 			/*else{
+                         *
 				//[D: ONLY NEED TO COMPARE ONCE ALL 4 DIGITS ARE 						//ENTERED, ELSE STATEMENT NOT NEEDED UNTIL AT END]
 				//DO SOMETHING HERE TO COMPARE OR CALL COMPARE
                          * 	//FUNCTION OR COMPARE STATE
@@ -127,22 +134,7 @@ int main(void)
 			}*/
 
                         if (inputCount == 5){
-                            /*[D:THIS IS FOR PROGRAMMING STATE ONLY]
-                            LCDPrintString( key); 		// Display key
-                            if (key == '#'){
-                                result = 2;		// Good
-                                //SEE ABOVE CAPS
-                            }
-                            else{
-                        	result = 0; 		// Bad
-                                state = 3; 		// Go to result state
-                           }*/
-                           //[D:This is  where you compare with your list of acceptable PW]
-                           //DO SOMETHING HERE TO COMPARE OR CALL COMPARE
-                           //FUNCTION OR COMPARE STATE
-                           //POSSIBLY STORE IN TEMP ARRAY TO COMPARE LATER
-
-
+                            
                            state = 2;                                           //I think this is when to untilize state 2
 
                         }                                                       // End of IF(inputCount==4)
@@ -176,8 +168,9 @@ int main(void)
                         scanKeypad = 0;
                         LCDPrintChar(key);                              	// Display key
                         inputCount += 1;                                        // Update inputCount
+                        tempCount += 1;                                         // Update tempCount for tempArry
 
-                        if (inputCount <6){
+                        if (inputCount <5 && key != -1){
                             if (key == '*'){
 				result = 3;                                     // Invalid
 				state = 3;                              	// Go to result state
@@ -189,7 +182,7 @@ int main(void)
                             }
 
                             else {
-				// Store in temp array
+                                tempArry[tempCount] = key;
                             }
                         }                                                       // End of IF count less than 4
 
@@ -216,6 +209,8 @@ int main(void)
 
 
                 case 2: 							// Compare
+
+                    for (i=0; i < arryCount; i++)
                 // compare temp array to programed arrays
                 //[D:Is this where you compare with your list of acceptable PW?!?]
                 //DO SOMETHING HERE TO COMPARE OR CALL COMPARE
@@ -238,19 +233,23 @@ int main(void)
                 printVar1 = 0;
                 LCDClear();                                                 	// Clear screen and return home
                 if (result == 1){
-                        LCDPrintString("Bad");                          	// Display Bad
+                    LCDPrintString("Bad");                          	// Display Bad
+                    tempArry = NULL;
                 }
 
                 if (result == 2){
                     LCDPrintString("Good");                                 	// Display Good
+                    tempArry = NULL;
                 }
 
                 if (result == 3){
                     LCDPrintString("Invalid");                                  // Display Invalid
+                    tempArry = NULL;
                 }
 
                 if (result == 4){
                     LCDPrintString("Valid");                                     // Display Valid
+                    tempArry = NULL;
                 }
 
                 DelayUs(300000);                                          	// Wait 2 seconds NEED TO CHANGE THIS
