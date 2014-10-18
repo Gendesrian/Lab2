@@ -50,17 +50,14 @@ void DelayUs(unsigned int usDelay) {
 //    T2CON = 0x8000;
 //    for(i = 0; i < TMR2; i++);
 
-        PR2= (usDelay * 14);
+        
         TMR2=0;
-        //tmr2 flag=0
+        PR2= (usDelay * 2);
         IFS0bits.T2IF = 0;
-        //T2CON=0x8000;
-        T2CONbits.TCKPS = 0;
-        T2CONbits.TON = 1;
-        while(IFS0bits.T2IF == 0){}
-        //T2CON=0x0000;
+        T2CON=0x8010;
+        while(IFS0bits.T2IF == 0);
         T2CONbits.TON = 0;
-        IFS0bits.T2IF = 0;
+
 
 
         //wait until flag goes up
@@ -91,6 +88,7 @@ void EnableLCD(unsigned char commandType, unsigned usDelay) {
 	LCD_RS = commandType; DelayUs(usDelay);
 	LCD_E = 1;  DelayUs(usDelay);
 	LCD_E = 0;  DelayUs(usDelay);
+        LCD_RS = 0;
 }
 
 // ******************************************************************************************* //
@@ -129,6 +127,8 @@ void WriteLCD(unsigned char word, unsigned commandType, unsigned usDelay) {
     temp |= leastSigBit;
     LCD_D = temp;
     EnableLCD(commandType, usDelay);
+
+    LCD_D = (LCD_D & 0x0FFF);
     
 //    //try using INT instead of CHAR
 //    int tempWord = word;
@@ -211,6 +211,7 @@ void LCDInitialize(void) {
     WriteLCD(0x0C, LCD_WRITE_CONTROL, 40);
 
     
+    
 //    LCDPrintChar('h');
 //    LCDPrintChar('e');
 //    LCDPrintChar('l');
@@ -278,6 +279,7 @@ void LCDPrintChar(char c) {
 	// the proper delay is utilized.
     WriteLCD(c, LCD_WRITE_DATA, 46);
 
+    LCD_D = (LCD_D & 0x0FFF);
 }
 
 
